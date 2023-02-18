@@ -22,30 +22,34 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun Grid(
-    selectedGrid : IntArray,
-    selectedGridOnChange : (IntArray)->Unit,
-    board : Array<IntArray>
+    selectedGrid : MutableList<Int>,
+    selectedGridOnChange : (MutableList<Int>)->Unit,
+    board : MutableList<Int>,
+    colorBoard:List<Int>
 ) {
 
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .border(
-                4.dp,
-                MaterialTheme.colorScheme.surfaceColorAtElevation(900.dp),
-                RoundedCornerShape(16.dp)
-            )
-            .padding(3.dp)
-            .background(MaterialTheme.colorScheme.surface)
-    ){
+    val grid = board.chunked(9)
+    val colorBoardGrid = colorBoard.chunked(9)
 
+    Box{
 
-        for (r in 0..8){
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 22.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(
+                    4.dp,
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(900.dp),
+                    RoundedCornerShape(16.dp)
+                )
+                .padding(4.dp)
+                .background(MaterialTheme.colorScheme.surface)
+        ){
+            for (r in 0..8){
 
                 Column(
                     modifier = Modifier
@@ -56,53 +60,71 @@ fun Grid(
                     for (c in 0..8){
 
                         val selectedGridBackground =
-                            if(selectedGrid.contentEquals(intArrayOf(r,c))){
+                            if(selectedGrid[0]==r && selectedGrid[1]==c){
                                 MaterialTheme.colorScheme.tertiaryContainer
                             }else {
                                 MaterialTheme.colorScheme.background
                             }
 
-                        if (board[c].get(r)==0){
-                            EmptyBox(number = 0,selectedGridBackground,selectedGridOnChange,r,c)
+                        if (colorBoardGrid[c][r] ==0){
+                            EmptyBox(number = grid[c][r],selectedGridBackground,selectedGridOnChange,r,c)
                         }else {
-                            GreyBox(number = board[c].get(r) )
+                            GreyBox(number = grid[c][r])
                         }
 
 
-                        /*Row(
+                    }
+                }
+            }
+        }
+
+        //sudoku thick frame
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 22.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(
+                    0.dp,
+                    MaterialTheme.colorScheme.surfaceColorAtElevation(900.dp),
+                    RoundedCornerShape(16.dp)
+                )
+        ){
+            for (r in 0..2){
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
+                ) {
+                    for (c in 0..2){
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(
-                                    0.5.dp,
-                                    MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp)
+                                    1.dp,
+                                    MaterialTheme.colorScheme.surfaceColorAtElevation(2000.dp)
                                 )
-                                .background(selectedGridBackground)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = rememberRipple(color = MaterialTheme.colorScheme.tertiaryContainer)
-                                ) {
-                                    selectedGridOnChange(intArrayOf(r, c))
-                                }
-                        ) {
-                            Text(
-                                text =  if (board[c].get(r)!=0){
-                                    board[c].get(r).toString()
-                                }else {
-                                    ""
-                                },
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
+                        ){
+                            Box(
+                                modifier = Modifier
+                                    .height(111.dp)
+
                             )
-                        }*/
+                        }
 
 
+                    }
                 }
             }
         }
-
     }
+
 }
 
 @Composable
@@ -115,16 +137,19 @@ fun GreyBox(number:Int){
             .border(0.5.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
     ) {
-        Text(
-            text = number.toString(),
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.width(36.dp).height(36.dp)) {
+            Text(
+                text = number.toString(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+
     }
 }
 
 @Composable
-fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(IntArray)->Unit,r:Int,c:Int){
+fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(MutableList<Int>)->Unit,r:Int,c:Int){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -136,13 +161,15 @@ fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(IntAr
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colorScheme.tertiaryContainer)
             ) {
-                selectedGridOnChange(intArrayOf(r,c))
+                selectedGridOnChange(mutableListOf(r, c))
             }
     ) {
-        Text(
-            text = "",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-        )
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.width(36.dp).height(36.dp)) {
+            Text(
+                text = if (number==0){""}else number.toString(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }

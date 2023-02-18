@@ -2,17 +2,21 @@ package com.example.sudoku
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Backspace
 import androidx.compose.material.icons.rounded.Remove
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,7 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun InputPad() {
+fun InputPad(
+    selectedGrid:MutableList<Int>,
+    board:MutableList<Int>,
+    onUpdateBoard:(MutableList<Int>)->Unit
+) {
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,17 +51,17 @@ fun InputPad() {
             .border(0.5.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp))
 
         Row() {
-            DigitBox("1",modifier)
-            DigitBox("2",modifier)
-            DigitBox("3",modifier)
-            DigitBox("4",modifier)
-            DigitBox("5",modifier)
+            DigitBox(1,modifier,board,onUpdateBoard,selectedGrid)
+            DigitBox(2,modifier,board,onUpdateBoard,selectedGrid)
+            DigitBox(3,modifier,board,onUpdateBoard,selectedGrid)
+            DigitBox(4,modifier,board,onUpdateBoard,selectedGrid)
+            DigitBox(5,modifier,board,onUpdateBoard,selectedGrid)
         }
         Row() {
-            DigitBox("6",modifier)
-            DigitBox("7",modifier)
-            DigitBox("8",modifier)
-            DigitBox("9",modifier)
+            DigitBox(6,modifier,board,onUpdateBoard,selectedGrid)
+            DigitBox(7,modifier,board,onUpdateBoard,selectedGrid)
+            DigitBox(8,modifier,board,onUpdateBoard,selectedGrid)
+            DigitBox(9,modifier,board,onUpdateBoard,selectedGrid)
 
             Row(
                 modifier = modifier.padding(12.dp),
@@ -67,5 +77,24 @@ fun InputPad() {
             }
 
         }
+    }
+}
+
+@Composable
+fun DigitBox(number:Int, modifier: Modifier, board: MutableList<Int>, onUpdateBoard: (MutableList<Int>) -> Unit,selectedGrid: MutableList<Int>){
+
+
+    Row(
+        modifier = modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
+            ) {
+                onUpdateBoard(board)
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(modifier = Modifier.padding(8.dp), text = number.toString(), fontSize = 28.sp, fontWeight = FontWeight.Bold)
     }
 }

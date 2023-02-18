@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.surfaceColorAtElevation
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,8 +34,9 @@ class MainActivity : ComponentActivity() {
 
                     val selectedMode = sudokuUiState.selectedMode
                     val selectedGrid = sudokuUiState.selectedGrid
-
                     val board = sudokuUiState.board
+                    val colorBoard = sudokuUiState.colorBoard
+
 
                     Column(
                         modifier = Modifier
@@ -52,14 +52,14 @@ class MainActivity : ComponentActivity() {
 
                         Header()
 
-                        Grid(selectedGrid,{sudokuViewModel.updateSelectedGrid(it)},board)
+                        Grid(selectedGrid,{sudokuViewModel.updateSelectedGrid(it)},board,colorBoard)
 
                         Column(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                             modifier = Modifier.padding(bottom = 24.dp)
                         ) {
                             Tabs(selectedMode,{sudokuViewModel.updateMode(it)})
-                            InputPad()
+                            InputPad(selectedGrid,board,{sudokuViewModel.updateBoard(it)})
                         }
 
 
