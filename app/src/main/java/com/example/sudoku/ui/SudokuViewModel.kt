@@ -25,12 +25,11 @@ class SudokuViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(selectedGrid = selectedGrid)
     }
 
-    fun updateBoard(updatedBoard:MutableList<Int>) {
-
+    fun updateBoard(number:Int) {
         val index = getSelectedGrid()[1] *9+ getSelectedGrid()[0]
         println(index)
-        updatedBoard[index] = 9
-        _uiState.value = _uiState.value.copy(board = updatedBoard)
+        getSudokuBoard()[index] = number
+        _uiState.value = _uiState.value.copy(board = getSudokuBoard())
     }
 
     fun getSudokuBoard(): MutableList<Int> {

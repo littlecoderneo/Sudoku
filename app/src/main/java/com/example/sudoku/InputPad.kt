@@ -28,7 +28,8 @@ import androidx.compose.ui.unit.sp
 fun InputPad(
     selectedGrid:MutableList<Int>,
     board:MutableList<Int>,
-    onUpdateBoard:(MutableList<Int>)->Unit
+    onUpdateBoard:(Int)->Unit
+
 ) {
 
 
@@ -81,7 +82,7 @@ fun InputPad(
 }
 
 @Composable
-fun DigitBox(number:Int, modifier: Modifier, board: MutableList<Int>, onUpdateBoard: (MutableList<Int>) -> Unit,selectedGrid: MutableList<Int>){
+fun DigitBox(number:Int, modifier: Modifier, board: MutableList<Int>, onUpdateBoard: (Int) -> Unit,selectedGrid: MutableList<Int>){
 
 
     Row(
@@ -90,7 +91,7 @@ fun DigitBox(number:Int, modifier: Modifier, board: MutableList<Int>, onUpdateBo
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
             ) {
-                onUpdateBoard(board)
+                onUpdateBoard(number)
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center

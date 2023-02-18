@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
                     val colorBoard = sudokuUiState.colorBoard
 
 
+
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -50,6 +51,7 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
+                        val number=0
                         Header()
 
                         Grid(selectedGrid,{sudokuViewModel.updateSelectedGrid(it)},board,colorBoard)

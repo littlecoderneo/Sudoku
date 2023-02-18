@@ -28,7 +28,6 @@ fun Grid(
     colorBoard:List<Int>
 ) {
 
-
     val grid = board.chunked(9)
     val colorBoardGrid = colorBoard.chunked(9)
 
@@ -66,7 +65,7 @@ fun Grid(
                                 MaterialTheme.colorScheme.background
                             }
 
-                        if (colorBoardGrid[c][r] ==0){
+                        if (colorBoardGrid[c][r]==0){
                             EmptyBox(number = grid[c][r],selectedGridBackground,selectedGridOnChange,r,c)
                         }else {
                             GreyBox(number = grid[c][r])
