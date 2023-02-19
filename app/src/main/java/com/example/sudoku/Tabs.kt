@@ -95,7 +95,7 @@ fun TipPercentRadio(tipList:List<String>, selectedMode:String, onSelectedModeCha
 
         val tipTextColor: Color by animateColorAsState((if (selectedMode.equals(item)) {
             MaterialTheme.colorScheme.onPrimary
-        } else (MaterialTheme.colorScheme.onPrimaryContainer)),
+        } else (MaterialTheme.colorScheme.primary)),
             animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
         )
 

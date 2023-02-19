@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.surfaceColorAtElevation
@@ -17,26 +20,30 @@ import com.example.sudoku.ui.SudokuViewModel
 import com.example.sudoku.ui.theme.SudokuTheme
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
             SudokuTheme {
-                // A surface container using the 'background' color from the theme
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)
                 ) {
 
+                    val scope = rememberCoroutineScope()
+                    val settingsBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
+
                     val sudokuViewModel : SudokuViewModel = viewModel()
                     val sudokuUiState by sudokuViewModel.uiState.collectAsState()
-
                     val selectedMode = sudokuUiState.selectedMode
                     val selectedGrid = sudokuUiState.selectedGrid
                     val board = sudokuUiState.board
                     val colorBoard = sudokuUiState.colorBoard
-
+                    val solution = sudokuUiState.solution
+                    val hintMode = sudokuUiState.showHint
 
 
                     Column(
@@ -51,10 +58,9 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        val number=0
-                        Header()
+                        Header(settingsBottomSheetState,scope)
 
-                        Grid(selectedGrid,{sudokuViewModel.updateSelectedGrid(it)},board,colorBoard)
+                        Grid(selectedGrid,{sudokuViewModel.updateSelectedGrid(it)},board,colorBoard,solution,hintMode)
 
                         Column(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -67,6 +73,7 @@ class MainActivity : ComponentActivity() {
 
                     }
 
+                    SettingsBottomSheet(sheetState = settingsBottomSheetState,scope,hintMode,{sudokuViewModel.updatedHintMode(it)})
 
                 }
             }

@@ -65,7 +65,13 @@ fun InputPad(
             DigitBox(9,modifier,board,onUpdateBoard,selectedGrid)
 
             Row(
-                modifier = modifier.padding(12.dp),
+                modifier = modifier
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
+                    ) {
+                        onUpdateBoard(0)
+                    },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -73,7 +79,9 @@ fun InputPad(
                     imageVector = Icons.Rounded.Backspace,
                     contentDescription = "Remove",
                     modifier = Modifier
+                        .padding(12.dp)
                         .size(29.dp)
+
                 )
             }
 

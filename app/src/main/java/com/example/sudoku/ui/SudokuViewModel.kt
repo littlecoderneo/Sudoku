@@ -1,5 +1,6 @@
 package com.example.sudoku.ui
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,6 +18,12 @@ class SudokuViewModel : ViewModel() {
     val uiState : StateFlow<SudokuUiState> = _uiState.asStateFlow()
 
 
+
+    fun updatedHintMode(hint:MutableState<Boolean>){
+        hint.value = !hint.value
+        _uiState.value = _uiState.value.copy(showHint = hint)
+    }
+
     fun updateMode(mode:String){
         _uiState.value = _uiState.value.copy(selectedMode = mode)
     }
@@ -27,16 +34,15 @@ class SudokuViewModel : ViewModel() {
 
     fun updateBoard(number:Int) {
         val index = getSelectedGrid()[1] *9+ getSelectedGrid()[0]
-        println(index)
         getSudokuBoard()[index] = number
         _uiState.value = _uiState.value.copy(board = getSudokuBoard())
     }
 
-    fun getSudokuBoard(): MutableList<Int> {
+    private fun getSudokuBoard(): MutableList<Int> {
         return _uiState.value.board
     }
 
-    fun getSelectedGrid(): MutableList<Int> {
+    private fun getSelectedGrid(): MutableList<Int> {
         return _uiState.value.selectedGrid
     }
 

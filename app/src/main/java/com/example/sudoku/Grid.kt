@@ -11,25 +11,33 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.Calendar
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun Grid(
     selectedGrid : MutableList<Int>,
     selectedGridOnChange : (MutableList<Int>)->Unit,
     board : MutableList<Int>,
-    colorBoard:List<Int>
+    colorBoard:List<Int>,
+    solution:List<Int>,
+    hintMode:MutableState<Boolean>
+
 ) {
 
     val grid = board.chunked(9)
     val colorBoardGrid = colorBoard.chunked(9)
+    val solutionBoard = solution.chunked(9)
 
     Box{
 
@@ -66,7 +74,9 @@ fun Grid(
                             }
 
                         if (colorBoardGrid[c][r]==0){
-                            EmptyBox(number = grid[c][r],selectedGridBackground,selectedGridOnChange,r,c)
+                            val match:Boolean = solutionBoard[c][r] == grid[c][r]
+                            EmptyBox(number = grid[c][r],selectedGridBackground,selectedGridOnChange,r,c,match,hintMode)
+                            //EmptyBox(number = grid[c][r],selectedGridBackground,selectedGridOnChange,r,c)
                         }else {
                             GreyBox(number = grid[c][r])
                         }
@@ -136,7 +146,9 @@ fun GreyBox(number:Int){
             .border(0.5.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
     ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.width(36.dp).height(36.dp)) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier
+            .width(36.dp)
+            .height(36.dp)) {
             Text(
                 text = number.toString(),
                 fontSize = 28.sp,
@@ -148,10 +160,8 @@ fun GreyBox(number:Int){
 }
 
 @Composable
-fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(MutableList<Int>)->Unit,r:Int,c:Int){
+fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(MutableList<Int>)->Unit,r:Int,c:Int,match:Boolean,hintMode: MutableState<Boolean>){
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
             .border(0.5.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp))
@@ -163,12 +173,33 @@ fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(Mutab
                 selectedGridOnChange(mutableListOf(r, c))
             }
     ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.width(36.dp).height(36.dp)) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier
+            .width(36.dp)
+            .height(36.dp)) {
             Text(
                 text = if (number==0){""}else number.toString(),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
             )
+            if(!match && number!=0 && hintMode.value){
+                Box(contentAlignment = Alignment.BottomEnd,modifier = Modifier
+                    .width(36.dp)
+                    .height(36.dp)
+                    .padding(bottom = 4.dp, end = 4.dp)
+                ){
+                    Box(modifier = Modifier
+                        .width(4.dp)
+                        .height(4.dp)
+                        .clip(
+                            RoundedCornerShape(100.dp)
+                        )
+                        .background(MaterialTheme.colorScheme.error)
+                    )
+                }
+            }
+
         }
+
     }
 }
+
