@@ -31,7 +31,7 @@ import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Header(settingSheetState:ModalBottomSheetState,scope:CoroutineScope) {
+fun Header(settingSheetState:ModalBottomSheetState,scope:CoroutineScope,newGameBottomSheetState: ModalBottomSheetState) {
 
    var ticks by remember { mutableStateOf(0L) }
     LaunchedEffect(Unit) {
@@ -122,6 +122,14 @@ fun Header(settingSheetState:ModalBottomSheetState,scope:CoroutineScope) {
                     MaterialTheme.colorScheme.surfaceColorAtElevation(100.dp),
                     RoundedCornerShape(100.dp)
                 )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
+                ) {
+                    scope.launch {
+                        newGameBottomSheetState.show()
+                    }
+                }
 
 
         ) {

@@ -18,7 +18,6 @@ class SudokuViewModel : ViewModel() {
     val uiState : StateFlow<SudokuUiState> = _uiState.asStateFlow()
 
 
-
     fun updatedHintMode(hint:MutableState<Boolean>){
         hint.value = !hint.value
         _uiState.value = _uiState.value.copy(showHint = hint)
@@ -34,12 +33,23 @@ class SudokuViewModel : ViewModel() {
 
     fun updateBoard(number:Int) {
         val index = getSelectedGrid()[1] *9+ getSelectedGrid()[0]
+        if (getSelectedMode() == "Normal"){
+            getModeBoard()[index] = 0
+        }else{
+            getModeBoard()[index] = 1
+        }
+
         getSudokuBoard()[index] = number
         _uiState.value = _uiState.value.copy(board = getSudokuBoard())
+        _uiState.value = _uiState.value.copy(modeBoard = getModeBoard())
     }
 
     private fun getSudokuBoard(): MutableList<Int> {
         return _uiState.value.board
+    }
+
+    private fun getModeBoard(): MutableList<Int> {
+        return _uiState.value.modeBoard
     }
 
     private fun getSelectedGrid(): MutableList<Int> {
@@ -47,6 +57,9 @@ class SudokuViewModel : ViewModel() {
     }
 
 
+    private fun getSelectedMode(): String {
+        return _uiState.value.selectedMode
+    }
 
 
 }

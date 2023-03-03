@@ -1,14 +1,12 @@
 package com.example.sudoku
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.ripple.rememberRipple
@@ -36,11 +34,9 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SettingsBottomSheet(
+fun NewGameBottomSheet(
     sheetState: ModalBottomSheetState,
     scope: CoroutineScope,
-    hintMode:MutableState<Boolean>,
-    updateHintMode:(MutableState<Boolean>)->Unit
 ){
     ModalBottomSheetLayout(
         sheetState = sheetState,
@@ -54,7 +50,7 @@ fun SettingsBottomSheet(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxSize(0.60f)
+                    .fillMaxSize(0.55f)
                     .padding(top = 24.dp)
             ) {
                 Column(
@@ -104,11 +100,12 @@ fun SettingsBottomSheet(
 
                     Row(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(start = 16.dp)
-                            .padding(vertical = 4.dp)
+                            .padding(vertical = 4.dp),
                     ) {
                         Text(
-                            text = "Settings",
+                            text = "Choose your puzzle",
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 28.sp
                         )
@@ -116,62 +113,104 @@ fun SettingsBottomSheet(
 
                     Column(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                            .padding(vertical = 12.dp)
+                            .padding(vertical = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
 
-
                         Row(
-
                             modifier = Modifier
-                                .clip(
-                                    RoundedCornerShape(
-                                        topStart = 12.dp,
-                                        topEnd = 12.dp,
-                                        bottomEnd = 12.dp,
-                                        bottomStart = 12.dp
-                                    )
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .border(0.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp),
+                                    RoundedCornerShape(16.dp)
                                 )
-                                .background(
-                                    color = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                        2.dp
-                                    )
-                                )
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
                                 ) {
-                                    updateHintMode(hintMode)
+
                                     /*scope.launch {
                                         //currencyBottomSheetState.show()
                                     }*/
-                                }
-                                .padding(all = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-
-                        ) {
-                            Text(text = "Show hints")
-                            Spacer(modifier = Modifier.weight(1f))
-                            Switch(
-                                modifier = Modifier.scale(0.8f).height(0.dp).padding(0.dp),
-                                checked = hintMode.value,
-                                onCheckedChange = { updateHintMode(hintMode) }
-                            )
-                        }
-
-                        Row(
-
+                                },
+                                verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                modifier = Modifier.
-                                    padding(top = 16.dp),
-                                text = "Developed by Prithvi Ravi",
-                                color = MaterialTheme.colorScheme.secondary,
-                                fontSize = 12.sp
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp),
+                                text = "Easy",
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 20.sp
                             )
-
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .border(0.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp),
+                                    RoundedCornerShape(16.dp)
+                                )
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
+                                ) {
+
+                                    /*scope.launch {
+                                        //currencyBottomSheetState.show()
+                                    }*/
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp),
+                                text = "Medium",
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 20.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .border(0.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp),
+                                    RoundedCornerShape(16.dp)
+                                )
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = rememberRipple(color = MaterialTheme.colorScheme.primary)
+                                ) {
+
+                                    /*scope.launch {
+                                        //currencyBottomSheetState.show()
+                                    }*/
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp),
+                                text = "Hard",
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 20.sp
+                            )
+                        }
+
+
                     }
 
                 }

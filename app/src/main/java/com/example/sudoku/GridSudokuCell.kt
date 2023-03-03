@@ -21,25 +21,24 @@ import androidx.compose.ui.input.key.Key.Companion.Calendar
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.sudoku.ui.SudokuCell
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun Grid(
+fun GridSudokuCell(
     selectedGrid : MutableList<Int>,
     selectedGridOnChange : (MutableList<Int>)->Unit,
-    board : MutableList<Int>,
-    colorBoard:List<Int>,
+    board : MutableList<SudokuCell>,
+    /*colorBoard:List<Int>,*/
     solution:List<Int>,
-    hintMode:MutableState<Boolean>,
-    modeBoard: MutableList<Int>
+    hintMode:MutableState<Boolean>
 
 ) {
 
     val grid = board.chunked(9)
-    val colorBoardGrid = colorBoard.chunked(9)
+    /*val colorBoardGrid = colorBoard.chunked(9)*/
     val solutionBoard = solution.chunked(9)
-    val modeBoardGrid = modeBoard.chunked(9)
 
     Box{
 
@@ -75,15 +74,17 @@ fun Grid(
                                 MaterialTheme.colorScheme.background
                             }
 
-                        if (colorBoardGrid[c][r]==0){
-                            val match:Boolean = solutionBoard[c][r] == grid[c][r]
-                            if(modeBoardGrid[c][r]==0){
-                                EmptyBox(number = grid[c][r],selectedGridBackground,selectedGridOnChange,r,c,match,hintMode)
-                            }else {
-                                CandidateBox(number = grid[c][r],selectedGridBackground,selectedGridOnChange,r,c)
-                            }
+                        if (grid[c][r].block){
+                            //val match:Boolean = solutionBoard[c][r] == grid[c][r]
+                            GreyCell(number = grid[c][r].value)
+
                         }else {
-                            GreyBox(number = grid[c][r])
+                            if (grid[c][r].modeNormal){
+                                val match:Boolean = solutionBoard[c][r] == grid[c][r].value
+                                EmptyCell(number = grid[c][r].value,selectedGridBackground,selectedGridOnChange,r,c,match,hintMode)
+                            }else{
+                                CandidateCell(number = grid[c][r].value)
+                            }
                         }
 
 
@@ -142,7 +143,7 @@ fun Grid(
 }
 
 @Composable
-fun GreyBox(number:Int){
+fun GreyCell(number:Int){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -165,7 +166,7 @@ fun GreyBox(number:Int){
 }
 
 @Composable
-fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(MutableList<Int>)->Unit,r:Int,c:Int,match:Boolean,hintMode: MutableState<Boolean>){
+fun EmptyCell(number:Int,selectedGridBackground:Color,selectedGridOnChange:(MutableList<Int>)->Unit,r:Int,c:Int,match:Boolean,hintMode: MutableState<Boolean>){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -209,21 +210,15 @@ fun EmptyBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(Mutab
 }
 
 
+
 @Composable
-fun CandidateBox(number:Int,selectedGridBackground:Color,selectedGridOnChange:(MutableList<Int>)->Unit,r:Int,c:Int){
+fun CandidateCell(number:Int){
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
             .border(0.5.dp, MaterialTheme.colorScheme.surfaceColorAtElevation(500.dp))
-            .background(selectedGridBackground)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(color = MaterialTheme.colorScheme.tertiaryContainer)
-            ) {
-                selectedGridOnChange(mutableListOf(r, c))
-            }
     ) {
         Box(contentAlignment = Alignment.TopEnd, modifier = Modifier
             .width(36.dp)

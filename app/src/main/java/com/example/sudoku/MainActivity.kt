@@ -18,6 +18,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sudoku.ui.SudokuViewModel
 import com.example.sudoku.ui.theme.SudokuTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterialApi::class)
@@ -35,12 +36,14 @@ class MainActivity : ComponentActivity() {
 
                     val scope = rememberCoroutineScope()
                     val settingsBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
+                    val newGameBottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden, skipHalfExpanded = true)
 
                     val sudokuViewModel : SudokuViewModel = viewModel()
                     val sudokuUiState by sudokuViewModel.uiState.collectAsState()
                     val selectedMode = sudokuUiState.selectedMode
                     val selectedGrid = sudokuUiState.selectedGrid
                     val board = sudokuUiState.board
+                    val modeBoard = sudokuUiState.modeBoard
                     val colorBoard = sudokuUiState.colorBoard
                     val solution = sudokuUiState.solution
                     val hintMode = sudokuUiState.showHint
@@ -58,9 +61,9 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        Header(settingsBottomSheetState,scope)
+                        Header(settingsBottomSheetState,scope,newGameBottomSheetState)
 
-                        Grid(selectedGrid,{sudokuViewModel.updateSelectedGrid(it)},board,colorBoard,solution,hintMode)
+                        Grid(selectedGrid,{sudokuViewModel.updateSelectedGrid(it)},board,colorBoard,solution,hintMode,modeBoard)
 
                         Column(
                             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -73,6 +76,7 @@ class MainActivity : ComponentActivity() {
 
                     }
 
+                    NewGameBottomSheet(sheetState = newGameBottomSheetState,scope)
                     SettingsBottomSheet(sheetState = settingsBottomSheetState,scope,hintMode,{sudokuViewModel.updatedHintMode(it)})
 
                 }
